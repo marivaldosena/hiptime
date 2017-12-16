@@ -1,5 +1,6 @@
 class ItemsController < ApplicationController
   before_action :find_item, only: %w[show edit update destroy]
+  before_action :authenticate_user!
 
   def index
     @items = Item.all.order('created_at DESC')
@@ -10,11 +11,11 @@ class ItemsController < ApplicationController
   end
 
   def new
-    @item = Item.new
+    @item = current_user.items.build
   end
 
   def create
-    @item = Item.new(item_params)
+    @item = current_user.items.build(item_params)
 
     if @item.save
       redirect_to items_path
